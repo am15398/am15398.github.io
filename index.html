@@ -1,996 +1,2015 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ayush Maurya — Senior Data Engineer</title>
+<meta name="description" content="Ayush Maurya — Senior Data Engineer specializing in Azure Databricks, PySpark, Delta Lake, and FHIR healthcare pipelines." />
+<title>Ayush Maurya · Senior Data Engineer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
 <style>
-  :root {
-    --bg: #080c14;
-    --bg2: #0d1420;
-    --bg3: #111c2e;
-    --cyan: #00d4ff;
-    --cyan-dim: #00a3c4;
-    --green: #39ff8a;
-    --orange: #ff7043;
-    --text: #c8d8f0;
-    --text-dim: #6a85a8;
-    --border: #1a2d4a;
-    --card: #0f1e35;
-    --font-head: 'Syne', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 14px;
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
-
-  /* ── GRID BACKGROUND ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* ── SCANLINE ── */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.05) 2px,
-      rgba(0,0,0,0.05) 4px
-    );
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* ── NAV ── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    background: rgba(8,12,20,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 5vw;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .nav-logo {
-    font-family: var(--font-head);
-    font-weight: 800;
-    font-size: 18px;
-    color: var(--cyan);
-    letter-spacing: 0.05em;
-    text-decoration: none;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 28px;
-    list-style: none;
-  }
-
-  .nav-links a {
-    color: var(--text-dim);
-    text-decoration: none;
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
-
-  .nav-links a:hover { color: var(--cyan); }
-
-  /* ── MAIN LAYOUT ── */
-  main {
-    position: relative;
-    z-index: 1;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 5vw;
-  }
-
-  section {
-    padding: 100px 0 60px;
-  }
-
-  /* ── HERO ── */
-  #hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-top: 80px;
-  }
-
-  .hero-eyebrow {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--cyan);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    opacity: 0;
-    animation: fadeUp 0.6s 0.2s forwards;
-  }
-
-  .hero-eyebrow::before {
-    content: '> ';
-    color: var(--green);
-  }
-
-  h1.hero-name {
-    font-family: var(--font-head);
-    font-size: clamp(42px, 7vw, 88px);
-    font-weight: 800;
-    line-height: 1.0;
-    color: #fff;
-    letter-spacing: -0.02em;
-    margin-bottom: 16px;
-    opacity: 0;
-    animation: fadeUp 0.6s 0.35s forwards;
-  }
-
-  h1.hero-name span {
-    color: var(--cyan);
-    display: block;
-  }
-
-  .hero-title {
-    font-family: var(--font-mono);
-    font-size: clamp(13px, 1.8vw, 17px);
-    color: var(--text-dim);
-    margin-bottom: 36px;
-    opacity: 0;
-    animation: fadeUp 0.6s 0.5s forwards;
-  }
-
-  .hero-title .tag {
-    background: rgba(0,212,255,0.08);
-    border: 1px solid rgba(0,212,255,0.2);
-    color: var(--cyan);
-    border-radius: 4px;
-    padding: 2px 10px;
-    margin-right: 8px;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .hero-summary {
-    font-family: var(--font-mono);
-    font-size: 14px;
-    color: var(--text);
-    max-width: 620px;
-    line-height: 1.9;
-    margin-bottom: 44px;
-    border-left: 2px solid var(--cyan);
-    padding-left: 20px;
-    opacity: 0;
-    animation: fadeUp 0.6s 0.65s forwards;
-  }
-
-  .hero-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    opacity: 0;
-    animation: fadeUp 0.6s 0.8s forwards;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 22px;
-    border-radius: 4px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    text-decoration: none;
-    transition: all 0.2s;
-    text-transform: uppercase;
-  }
-
-  .btn-primary {
-    background: var(--cyan);
-    color: var(--bg);
-    font-weight: 700;
-  }
-  .btn-primary:hover { background: var(--cyan-dim); transform: translateY(-2px); }
-
-  .btn-outline {
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-  }
-  .btn-outline:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-2px); }
-
-  /* ── SECTION HEADER ── */
-  .section-label {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--cyan);
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .section-label::before { content: '// '; color: var(--text-dim); }
-
-  h2.section-title {
-    font-family: var(--font-head);
-    font-size: clamp(28px, 4vw, 44px);
-    font-weight: 800;
-    color: #fff;
-    letter-spacing: -0.02em;
-    margin-bottom: 48px;
-    line-height: 1.1;
-  }
-
-  h2.section-title em {
-    font-style: normal;
-    color: var(--cyan);
-  }
-
-  /* ── SKILLS ── */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 16px;
-  }
-
-  .skill-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-
-  .skill-card:hover {
-    border-color: var(--cyan);
-    transform: translateY(-3px);
-  }
-
-  .skill-card-title {
-    font-family: var(--font-head);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--cyan);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .skill-card-title .dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 6px var(--green);
-  }
-
-  .skill-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .skill-tag {
-    font-size: 11px;
-    font-family: var(--font-mono);
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--border);
-    color: var(--text);
-    border-radius: 3px;
-    padding: 3px 9px;
-    letter-spacing: 0.05em;
-  }
-
-  /* ── EXPERIENCE ── */
-  .timeline {
-    position: relative;
-    padding-left: 28px;
-  }
-
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 8px; bottom: 0;
-    width: 1px;
-    background: linear-gradient(to bottom, var(--cyan), transparent);
-  }
-
-  .timeline-item {
-    position: relative;
-    margin-bottom: 56px;
-    opacity: 0;
-    transform: translateX(-16px);
-    transition: opacity 0.5s, transform 0.5s;
-  }
-
-  .timeline-item.visible {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -32px; top: 8px;
-    width: 9px; height: 9px;
-    border-radius: 50%;
-    background: var(--cyan);
-    box-shadow: 0 0 10px var(--cyan);
-  }
-
-  .exp-header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-
-  .exp-company {
-    font-family: var(--font-head);
-    font-size: 20px;
-    font-weight: 800;
-    color: #fff;
-  }
-
-  .exp-badge {
-    font-size: 10px;
-    font-family: var(--font-mono);
-    background: rgba(0,212,255,0.1);
-    border: 1px solid rgba(0,212,255,0.3);
-    color: var(--cyan);
-    padding: 3px 10px;
-    border-radius: 20px;
-    letter-spacing: 0.1em;
-    align-self: center;
-  }
-
-  .exp-role {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-bottom: 6px;
-  }
-
-  .exp-period {
-    font-size: 11px;
-    color: var(--text-dim);
-    font-family: var(--font-mono);
-    margin-bottom: 16px;
-    letter-spacing: 0.1em;
-  }
-
-  .exp-period::before { content: '📅 '; }
-
-  .exp-bullets {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .exp-bullets li {
-    font-size: 13px;
-    color: var(--text);
-    padding-left: 20px;
-    position: relative;
-    line-height: 1.7;
-  }
-
-  .exp-bullets li::before {
-    content: '▸';
-    color: var(--cyan);
-    position: absolute;
-    left: 0;
-    font-size: 10px;
-    top: 3px;
-  }
-
-  .highlight {
-    color: var(--green);
-    font-weight: 500;
-  }
-
-  /* ── CERTS ── */
-  .certs-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
-  }
-
-  .cert-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px 20px;
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-
-  .cert-card:hover {
-    border-color: var(--green);
-    transform: translateY(-3px);
-  }
-
-  .cert-icon {
-    font-size: 28px;
-    flex-shrink: 0;
-  }
-
-  .cert-name {
-    font-family: var(--font-head);
-    font-size: 14px;
-    font-weight: 700;
-    color: #fff;
-    line-height: 1.4;
-    margin-bottom: 4px;
-  }
-
-  .cert-issuer {
-    font-size: 11px;
-    color: var(--text-dim);
-    font-family: var(--font-mono);
-  }
-
-  /* ── PROJECT ── */
-  .project-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 36px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 24px;
-    align-items: start;
-    transition: border-color 0.2s;
-  }
-
-  .project-card:hover { border-color: var(--orange); }
-
-  .project-name {
-    font-family: var(--font-head);
-    font-size: 22px;
-    font-weight: 800;
-    color: #fff;
-    margin-bottom: 10px;
-  }
-
-  .project-desc {
-    font-size: 13px;
-    color: var(--text);
-    line-height: 1.8;
-    margin-bottom: 20px;
-  }
-
-  .project-stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .stack-tag {
-    font-size: 11px;
-    font-family: var(--font-mono);
-    background: rgba(255,112,67,0.08);
-    border: 1px solid rgba(255,112,67,0.25);
-    color: var(--orange);
-    border-radius: 3px;
-    padding: 3px 10px;
-    letter-spacing: 0.05em;
-  }
-
-  .project-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--orange);
-    text-decoration: none;
-    font-size: 12px;
-    font-family: var(--font-mono);
-    border: 1px solid rgba(255,112,67,0.3);
-    padding: 8px 16px;
-    border-radius: 4px;
-    white-space: nowrap;
-    transition: background 0.2s;
-  }
-
-  .project-link:hover { background: rgba(255,112,67,0.1); }
-
-  /* ── CONTACT ── */
-  #contact {
-    text-align: center;
-  }
-
-  .contact-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 14px;
-    margin-top: 40px;
-  }
-
-  .contact-card {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 22px;
-    text-decoration: none;
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 13px;
-    transition: all 0.2s;
-  }
-
-  .contact-card:hover {
-    border-color: var(--cyan);
-    color: var(--cyan);
-    transform: translateY(-2px);
-  }
-
-  .contact-icon { font-size: 18px; }
-
-  /* ── FOOTER ── */
-  footer {
-    position: relative;
-    z-index: 1;
-    border-top: 1px solid var(--border);
-    padding: 30px 5vw;
-    text-align: center;
-    color: var(--text-dim);
-    font-size: 11px;
-    font-family: var(--font-mono);
-    letter-spacing: 0.1em;
-  }
-
-  footer span { color: var(--cyan); }
-
-  /* ── DIVIDER ── */
-  .divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
-    margin: 20px 0 60px;
-  }
-
-  /* ── STAT ROW ── */
-  .stats-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 32px;
-    margin-bottom: 60px;
-    padding: 28px 32px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    border-left: 3px solid var(--cyan);
-  }
-
-  .stat-item {}
-  .stat-value {
-    font-family: var(--font-head);
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--cyan);
-    line-height: 1;
-  }
-  .stat-label {
-    font-size: 11px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    margin-top: 4px;
-  }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0; }
-  }
-
-  .cursor {
-    display: inline-block;
-    width: 2px;
-    height: 1em;
-    background: var(--cyan);
-    margin-left: 2px;
-    animation: blink 1s infinite;
-    vertical-align: middle;
-  }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 640px) {
-    .project-card { grid-template-columns: 1fr; }
-    .nav-links { display: none; }
-    .stats-row { gap: 20px; }
-  }
+/* ══════════════════════════════════════════════
+   DESIGN TOKENS
+══════════════════════════════════════════════ */
+[data-theme="dark"] {
+  --bg:         #0d1117;
+  --bg2:        #161b22;
+  --bg3:        #1c2330;
+  --bg4:        #21262d;
+  --border:     #30363d;
+  --border-sub: #21262d;
+  --text:       #e6edf3;
+  --text-2:     #8b949e;
+  --text-3:     #6e7681;
+  --head:       #f0f6fc;
+  --accent:     #2ea043;
+  --accent-2:   #1f6feb;
+  --accent-g1:  #58a6ff;
+  --accent-g2:  #3fb950;
+  --card-bg:    #161b22;
+  --card-border:#30363d;
+  --nav-bg:     rgba(13,17,23,0.85);
+  --tag-bg:     rgba(46,160,67,0.12);
+  --tag-color:  #3fb950;
+  --tag-border: rgba(46,160,67,0.25);
+  --btn-primary-bg: #238636;
+  --btn-primary-hover: #2ea043;
+  --btn-outline-border: #30363d;
+  --btn-outline-hover: #21262d;
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  --shadow-card: 0 1px 0 rgba(255,255,255,0.04), 0 4px 24px rgba(0,0,0,0.3);
+  --glow: 0 0 40px rgba(88,166,255,0.08);
+  --skill-bar-bg: #21262d;
+  --hero-sub: #8b949e;
+  --scrollbar-thumb: #30363d;
+}
+
+[data-theme="light"] {
+  --bg:         #ffffff;
+  --bg2:        #f6f8fa;
+  --bg3:        #eaeef2;
+  --bg4:        #e1e4e8;
+  --border:     #d0d7de;
+  --border-sub: #eaeef2;
+  --text:       #1f2328;
+  --text-2:     #656d76;
+  --text-3:     #8c959f;
+  --head:       #1f2328;
+  --accent:     #1a7f37;
+  --accent-2:   #0969da;
+  --accent-g1:  #0969da;
+  --accent-g2:  #1a7f37;
+  --card-bg:    #ffffff;
+  --card-border:#d0d7de;
+  --nav-bg:     rgba(255,255,255,0.88);
+  --tag-bg:     rgba(26,127,55,0.08);
+  --tag-color:  #1a7f37;
+  --tag-border: rgba(26,127,55,0.2);
+  --btn-primary-bg: #1a7f37;
+  --btn-primary-hover: #218a3d;
+  --btn-outline-border: #d0d7de;
+  --btn-outline-hover: #f6f8fa;
+  --shadow: 0 8px 32px rgba(0,0,0,0.12);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+  --glow: 0 0 40px rgba(9,105,218,0.06);
+  --skill-bar-bg: #eaeef2;
+  --hero-sub: #656d76;
+  --scrollbar-thumb: #d0d7de;
+}
+
+/* ══════════════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* ══════════════════════════════════════════════
+   TYPOGRAPHY
+══════════════════════════════════════════════ */
+h1, h2, h3, h4 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  color: var(--head);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.mono { font-family: 'DM Mono', monospace; }
+
+/* ══════════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════════ */
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+section { padding: 96px 0; }
+
+/* ══════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  height: 64px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.nav-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  background: linear-gradient(135deg, var(--accent-g1), var(--accent-g2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.nav-links a:hover { color: var(--text); background: var(--bg4); }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Theme toggle */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 16px;
+}
+
+.theme-toggle:hover { background: var(--bg4); color: var(--text); }
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg2);
+}
+
+.hamburger span {
+  display: block;
+  width: 18px; height: 2px;
+  background: var(--text-2);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+/* Mobile menu */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 64px; left: 0; right: 0;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  z-index: 199;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-2);
+  padding: 10px 12px;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+.mobile-menu a:hover { background: var(--bg4); color: var(--text); }
+
+/* ══════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════ */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 120px 0 80px;
+  overflow: hidden;
+}
+
+/* Mesh background */
+.hero-mesh {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.hero-mesh::before {
+  content: '';
+  position: absolute;
+  top: -20%; right: -10%;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(88,166,255,0.07) 0%, transparent 70%);
+}
+
+.hero-mesh::after {
+  content: '';
+  position: absolute;
+  bottom: 10%; left: -5%;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(63,185,80,0.06) 0%, transparent 70%);
+}
+
+/* Dot grid */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--tag-color);
+  background: var(--tag-bg);
+  border: 1px solid var(--tag-border);
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 28px;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  animation: fadeUp 0.5s 0.1s forwards;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent-g2);
+  box-shadow: 0 0 8px var(--accent-g2);
+  flex-shrink: 0;
+}
+
+h1.hero-name {
+  font-size: clamp(44px, 7vw, 80px);
+  font-weight: 800;
+  color: var(--head);
+  margin-bottom: 16px;
+  opacity: 0;
+  animation: fadeUp 0.5s 0.2s forwards;
+}
+
+h1.hero-name .gradient-text {
+  background: linear-gradient(135deg, var(--accent-g1) 0%, var(--accent-g2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-tagline {
+  font-size: clamp(16px, 2.5vw, 21px);
+  color: var(--text-2);
+  font-weight: 400;
+  margin-bottom: 28px;
+  max-width: 600px;
+  line-height: 1.6;
+  opacity: 0;
+  animation: fadeUp 0.5s 0.3s forwards;
+}
+
+.hero-tagline strong { color: var(--text); font-weight: 600; }
+
+.hero-summary {
+  font-size: 15px;
+  color: var(--text-2);
+  max-width: 560px;
+  line-height: 1.8;
+  margin-bottom: 40px;
+  padding-left: 16px;
+  border-left: 2px solid var(--border);
+  opacity: 0;
+  animation: fadeUp 0.5s 0.4s forwards;
+}
+
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 56px;
+  opacity: 0;
+  animation: fadeUp 0.5s 0.5s forwards;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  letter-spacing: 0.01em;
+}
+
+.btn-primary {
+  background: var(--btn-primary-bg);
+  color: #fff;
+  border-color: var(--btn-primary-bg);
+}
+.btn-primary:hover {
+  background: var(--btn-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(46,160,67,0.25);
+}
+
+.btn-secondary {
+  background: var(--bg2);
+  color: var(--text);
+  border-color: var(--border);
+}
+.btn-secondary:hover { background: var(--bg4); transform: translateY(-2px); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-2);
+  border-color: var(--border);
+}
+.btn-ghost:hover { background: var(--bg2); color: var(--text); }
+
+/* Hero stats */
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg2);
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeUp 0.5s 0.6s forwards;
+  max-width: 600px;
+}
+
+.hero-stat {
+  flex: 1;
+  min-width: 120px;
+  padding: 20px 24px;
+  border-right: 1px solid var(--border);
+}
+.hero-stat:last-child { border-right: none; }
+
+.stat-val {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent-g1), var(--accent-g2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-lbl {
+  font-size: 11px;
+  color: var(--text-3);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════════════
+   SECTION HEADERS
+══════════════════════════════════════════════ */
+.sec-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--tag-color);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sec-label::after {
+  content: '';
+  flex: 1;
+  max-width: 40px;
+  height: 1px;
+  background: var(--tag-color);
+  opacity: 0.4;
+}
+
+h2.sec-title {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 800;
+  color: var(--head);
+  margin-bottom: 12px;
+}
+
+.sec-sub {
+  font-size: 15px;
+  color: var(--text-2);
+  max-width: 520px;
+  margin-bottom: 56px;
+  line-height: 1.7;
+}
+
+/* ══════════════════════════════════════════════
+   ABOUT
+══════════════════════════════════════════════ */
+#about { background: var(--bg2); }
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.about-text p {
+  color: var(--text-2);
+  line-height: 1.85;
+  margin-bottom: 18px;
+  font-size: 15px;
+}
+
+.about-text p strong { color: var(--text); font-weight: 600; }
+
+.about-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border-sub);
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+
+.highlight-item:hover { border-color: var(--accent-g1); }
+
+.hi-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.hi-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--head);
+  margin-bottom: 2px;
+}
+
+.hi-sub {
+  font-size: 12px;
+  color: var(--text-3);
+  font-family: 'DM Mono', monospace;
+}
+
+/* ══════════════════════════════════════════════
+   SKILLS
+══════════════════════════════════════════════ */
+.skills-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.skill-bars { display: flex; flex-direction: column; gap: 20px; }
+
+.skill-bar-item {}
+
+.skill-bar-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.skill-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.skill-pct {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.bar-track {
+  height: 6px;
+  background: var(--skill-bar-bg);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--accent-g2), var(--accent-g1));
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.skill-tags-section {}
+
+.skill-group {
+  margin-bottom: 28px;
+}
+
+.skill-group-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-sub);
+}
+
+.tag-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stag {
+  font-size: 12px;
+  font-family: 'DM Mono', monospace;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  background: var(--bg2);
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+
+.stag:hover {
+  border-color: var(--accent-g1);
+  color: var(--accent-g1);
+  background: rgba(88,166,255,0.06);
+}
+
+/* ══════════════════════════════════════════════
+   PROJECTS
+══════════════════════════════════════════════ */
+#projects { background: var(--bg2); }
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.project-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-g2), var(--accent-g1));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-g1);
+  box-shadow: var(--shadow-card);
+}
+
+.project-card:hover::before { opacity: 1; }
+
+.project-card.featured {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 32px;
+  align-items: start;
+}
+
+.project-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.project-icon {
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.project-links {
+  display: flex;
+  gap: 8px;
+}
+
+.project-link-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-family: 'DM Mono', monospace;
+  color: var(--text-2);
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg3);
+  transition: all 0.2s;
+}
+
+.project-link-btn:hover { border-color: var(--accent-g1); color: var(--accent-g1); }
+
+.project-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--head);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.project-desc {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.75;
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+.project-metric {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-family: 'DM Mono', monospace;
+  color: var(--accent-g2);
+  background: rgba(63,185,80,0.08);
+  border: 1px solid rgba(63,185,80,0.2);
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.project-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.ptag {
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  color: var(--accent-g1);
+  background: rgba(88,166,255,0.07);
+  border: 1px solid rgba(88,166,255,0.18);
+  padding: 3px 9px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+/* ══════════════════════════════════════════════
+   EXPERIENCE TIMELINE
+══════════════════════════════════════════════ */
+.timeline {
+  position: relative;
+  padding-left: 32px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 12px;
+  bottom: 12px;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--accent-g1), var(--accent-g2) 70%, transparent);
+}
+
+.tl-item {
+  position: relative;
+  margin-bottom: 48px;
+  opacity: 0;
+  transform: translateX(-12px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+
+.tl-item.visible { opacity: 1; transform: translateX(0); }
+
+.tl-dot {
+  position: absolute;
+  left: -29px;
+  top: 6px;
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--accent-g1);
+  box-shadow: 0 0 0 3px rgba(88,166,255,0.12);
+}
+
+.tl-dot.current {
+  background: var(--accent-g1);
+  box-shadow: 0 0 0 4px rgba(88,166,255,0.15), 0 0 12px rgba(88,166,255,0.3);
+}
+
+.tl-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 24px 28px;
+  transition: border-color 0.2s;
+}
+
+.tl-card:hover { border-color: var(--accent-g1); }
+
+.tl-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.tl-company {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--head);
+}
+
+.tl-badge {
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  color: var(--accent-g2);
+  background: rgba(63,185,80,0.1);
+  border: 1px solid rgba(63,185,80,0.25);
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.08em;
+  align-self: center;
+}
+
+.tl-role {
+  font-size: 14px;
+  color: var(--text-2);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.tl-period {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+  margin-bottom: 18px;
+  letter-spacing: 0.06em;
+}
+
+.tl-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tl-bullets li {
+  font-size: 13px;
+  color: var(--text-2);
+  padding-left: 18px;
+  position: relative;
+  line-height: 1.7;
+}
+
+.tl-bullets li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--accent-g1);
+  font-size: 9px;
+  top: 4px;
+}
+
+.tl-bullets li .hl {
+  color: var(--accent-g2);
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════════════
+   CERTIFICATIONS
+══════════════════════════════════════════════ */
+#certifications { background: var(--bg2); }
+
+.certs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.cert-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 24px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.cert-card:hover { transform: translateY(-3px); border-color: var(--accent-g2); }
+
+.cert-icon-wrap {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.cert-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--head);
+  line-height: 1.35;
+  margin-bottom: 5px;
+}
+
+.cert-issuer {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 0.06em;
+}
+
+/* ══════════════════════════════════════════════
+   BLOG / ARTICLES
+══════════════════════════════════════════════ */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.blog-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, border-color 0.2s;
+  cursor: pointer;
+}
+
+.blog-card:hover { transform: translateY(-3px); border-color: var(--accent-g1); }
+
+.blog-tag {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--tag-color);
+  background: var(--tag-bg);
+  border: 1px solid var(--tag-border);
+  padding: 3px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  align-self: flex-start;
+}
+
+.blog-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--head);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.blog-excerpt {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.7;
+  flex: 1;
+  margin-bottom: 16px;
+}
+
+.blog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.blog-read {
+  color: var(--accent-g1);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.blog-note {
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text-2);
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+}
+
+.blog-note a { color: var(--accent-g1); }
+
+/* ══════════════════════════════════════════════
+   CONTACT
+══════════════════════════════════════════════ */
+#contact { background: var(--bg2); }
+
+.contact-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+.contact-info p {
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.8;
+  margin-bottom: 32px;
+}
+
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  transition: all 0.2s;
+  color: var(--text);
+}
+
+.contact-link:hover {
+  border-color: var(--accent-g1);
+  transform: translateX(4px);
+}
+
+.cl-icon {
+  width: 38px; height: 38px;
+  border-radius: 8px;
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.cl-label {
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  color: var(--text-3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.cl-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* Contact form */
+.contact-form {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 32px;
+}
+
+.contact-form h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--head);
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-family: 'DM Mono', monospace;
+  color: var(--text-3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  transition: border-color 0.2s;
+  resize: none;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: var(--text-3); }
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent-g1);
+}
+
+.form-note {
+  font-size: 11px;
+  color: var(--text-3);
+  font-family: 'DM Mono', monospace;
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* ══════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 0;
+  background: var(--bg);
+}
+
+.footer-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-copy {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.footer-copy span { color: var(--accent-g1); }
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text-3);
+  transition: color 0.2s;
+}
+
+.footer-links a:hover { color: var(--text); }
+
+/* ══════════════════════════════════════════════
+   BACK TO TOP
+══════════════════════════════════════════════ */
+.back-top {
+  position: fixed;
+  bottom: 28px; right: 28px;
+  width: 40px; height: 40px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.back-top.show { opacity: 1; pointer-events: all; }
+.back-top:hover { background: var(--bg4); color: var(--text); transform: translateY(-2px); }
+
+/* ══════════════════════════════════════════════
+   DIVIDER
+══════════════════════════════════════════════ */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0;
+}
+
+/* ══════════════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+
+  .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  .skills-layout { grid-template-columns: 1fr; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .project-card.featured { grid-column: span 1; grid-template-columns: 1fr; }
+  .blog-grid { grid-template-columns: 1fr; }
+  .contact-wrapper { grid-template-columns: 1fr; gap: 40px; }
+
+  .hero-stats { flex-direction: row; }
+  .hero-stat { min-width: 100px; }
+}
+
+@media (max-width: 600px) {
+  section { padding: 64px 0; }
+  .hero-stats { flex-direction: column; }
+  .hero-stat { border-right: none; border-bottom: 1px solid var(--border); }
+  .hero-stat:last-child { border-bottom: none; }
+  .certs-grid { grid-template-columns: 1fr; }
+  .footer-inner { flex-direction: column; text-align: center; }
+}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <a class="nav-logo" href="#hero">AM.</a>
-  <ul class="nav-links">
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#experience">Experience</a></li>
-    <li><a href="#certifications">Certs</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
+<!-- ══ NAV ══════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#hero">AM.</a>
 
-<main>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#certifications">Certs</a></li>
+      <li><a href="#blog">Articles</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
 
-  <!-- ── HERO ── -->
-  <section id="hero">
-    <div class="hero-eyebrow">Senior Data Engineer &amp; Associate Manager</div>
-    <h1 class="hero-name">
-      Ayush<span>Maurya.</span>
-    </h1>
-    <div class="hero-title">
-      <span class="tag">Azure Databricks</span>
-      <span class="tag">FHIR</span>
-      <span class="tag">Delta Lake</span>
-      <span class="tag">PySpark</span>
-      <span class="tag">7 Yrs Exp</span>
-    </div>
-    <p class="hero-summary">
-      Building enterprise-scale healthcare data platforms on Azure &amp; Databricks.
-      Specialized in Medallion architecture, FHIR pipelines, and GenAI-driven analytics.
-      Turning raw clinical data into reliable, governed, and high-performance lakehouse solutions.
-    </p>
-    <div class="hero-links">
-      <a class="btn btn-primary" href="mailto:ayushmaurya15398@gmail.com">📧 Get in Touch</a>
-      <a class="btn btn-outline" href="https://linkedin.com/in/ayush-maurya4" target="_blank">🔗 LinkedIn</a>
-      <a class="btn btn-outline" href="https://github.com/am15398" target="_blank">⚡ GitHub</a>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- ── STATS ── -->
-  <div class="stats-row">
-    <div class="stat-item">
-      <div class="stat-value">7+</div>
-      <div class="stat-label">Years Experience</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value">80%</div>
-      <div class="stat-label">FHIR Pipeline Speedup</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value">40%</div>
-      <div class="stat-label">Onboarding Effort Reduced</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value">3×</div>
-      <div class="stat-label">Databricks + Microsoft Certified</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value">50%</div>
-      <div class="stat-label">Manual Effort Cut via SCD Automation</div>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">🌙</button>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
+</nav>
 
-  <!-- ── SKILLS ── -->
-  <section id="skills">
-    <div class="section-label">technical stack</div>
-    <h2 class="section-title">What I <em>Build With</em></h2>
-    <div class="skills-grid">
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="closeMobile()">About</a>
+  <a href="#skills" onclick="closeMobile()">Skills</a>
+  <a href="#projects" onclick="closeMobile()">Projects</a>
+  <a href="#experience" onclick="closeMobile()">Experience</a>
+  <a href="#certifications" onclick="closeMobile()">Certifications</a>
+  <a href="#blog" onclick="closeMobile()">Articles</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+</div>
 
-      <div class="skill-card">
-        <div class="skill-card-title"><span class="dot"></span>Big Data &amp; Cloud</div>
-        <div class="skill-tags">
-          <span class="skill-tag">Azure Databricks</span>
-          <span class="skill-tag">PySpark</span>
-          <span class="skill-tag">Spark SQL</span>
-          <span class="skill-tag">Delta Lake</span>
-          <span class="skill-tag">ADLS Gen2</span>
-          <span class="skill-tag">Auto Loader</span>
-          <span class="skill-tag">Photon Engine</span>
+<!-- ══ HERO ══════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-mesh"></div>
+  <div class="hero-grid"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">Available for new opportunities · Pan India &amp; Remote</div>
+
+      <h1 class="hero-name">
+        Ayush <span class="gradient-text">Maurya.</span>
+      </h1>
+
+      <p class="hero-tagline">
+        <strong>Senior Data Engineer</strong> — Building scalable data platforms with<br>
+        Databricks, Snowflake, and Spark.
+      </p>
+
+      <p class="hero-summary">
+        7+ years architecting enterprise-scale data platforms in the US Healthcare domain.
+        Specialised in Delta Lake, Medallion architecture, FHIR pipelines, and GenAI-driven analytics.
+        Triple certified: Databricks Associate, Professional, and Microsoft Fabric.
+      </p>
+
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#contact">Get in Touch</a>
+        <a class="btn btn-secondary" href="#projects">View Projects</a>
+        <a class="btn btn-ghost" href="https://github.com/am15398" target="_blank">⚡ GitHub</a>
+        <a class="btn btn-ghost" href="https://linkedin.com/in/ayush-maurya4" target="_blank">🔗 LinkedIn</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="stat-val">7+</div>
+          <div class="stat-lbl">Years Exp.</div>
+        </div>
+        <div class="hero-stat">
+          <div class="stat-val">80%</div>
+          <div class="stat-lbl">FHIR Speedup</div>
+        </div>
+        <div class="hero-stat">
+          <div class="stat-val">40%</div>
+          <div class="stat-lbl">Onboarding ↓</div>
+        </div>
+        <div class="hero-stat">
+          <div class="stat-val">3×</div>
+          <div class="stat-lbl">Certified</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ABOUT ══════════════════════════════════════ -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <div class="sec-label">Who I Am</div>
+        <h2 class="sec-title" style="margin-bottom:24px;">About Me</h2>
+        <p>I'm a <strong>Senior Data Engineer and Associate Manager</strong> with 7 years of experience designing and optimising enterprise-scale data platforms on <strong>Azure &amp; Databricks</strong> within the US Healthcare domain.</p>
+        <p>My core expertise lies in building <strong>Medallion Lakehouse architectures</strong>, engineering FHIR-compliant healthcare pipelines, and delivering GenAI-powered analytics solutions. I lead teams end-to-end — from translating business requirements into scalable ingestion frameworks to driving data governance with Unity Catalog.</p>
+        <p>Beyond the technical stack, I believe in <strong>clean data contracts, observable pipelines, and platforms that teams actually want to use</strong>. I've reduced pipeline run times by 80%, cut manual onboarding effort by 40%, and automated SCD workflows that previously required constant maintenance.</p>
+        <div style="margin-top:28px;">
+          <a class="btn btn-secondary" href="mailto:ayushmaurya15398@gmail.com">📧 ayushmaurya15398@gmail.com</a>
         </div>
       </div>
 
-      <div class="skill-card">
-        <div class="skill-card-title"><span class="dot"></span>ETL &amp; Integration</div>
-        <div class="skill-tags">
-          <span class="skill-tag">Azure Data Factory</span>
-          <span class="skill-tag">Talend</span>
-          <span class="skill-tag">Informatica Cloud</span>
-          <span class="skill-tag">Snowpark</span>
-          <span class="skill-tag">REST APIs</span>
+      <div class="reveal" style="transition-delay:0.15s;">
+        <div class="about-highlights">
+          <div class="highlight-item">
+            <div class="hi-icon">🏥</div>
+            <div>
+              <div class="hi-title">US Healthcare Domain</div>
+              <div class="hi-sub">FHIR R5 · OMOP CDM · ACO Analytics · NICU Claims</div>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <div class="hi-icon">⚡</div>
+            <div>
+              <div class="hi-title">Azure Databricks Expert</div>
+              <div class="hi-sub">Delta Lake · Auto Loader · Liquid Clustering · Photon · AQE</div>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <div class="hi-icon">🏗️</div>
+            <div>
+              <div class="hi-title">Medallion Architecture</div>
+              <div class="hi-sub">Bronze → Silver → Gold · SCD Type 1/2/Hybrid · Kimball Dimensional</div>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <div class="hi-icon">🤖</div>
+            <div>
+              <div class="hi-title">GenAI &amp; Analytics</div>
+              <div class="hi-sub">Text-to-SQL · Groq Llama-3.1 · FastAPI · Databricks SQL</div>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <div class="hi-icon">🏛️</div>
+            <div>
+              <div class="hi-title">Data Governance</div>
+              <div class="hi-sub">Unity Catalog · Azure Key Vault · Audit Logging · Data Lineage</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ SKILLS ══════════════════════════════════════ -->
+<section id="skills">
+  <div class="container">
+    <div class="sec-label reveal">Technical Stack</div>
+    <h2 class="sec-title reveal">Skills &amp; Technologies</h2>
+    <p class="sec-sub reveal">The tools I use daily to build production-grade data platforms.</p>
+
+    <div class="skills-layout">
+
+      <div class="reveal" style="transition-delay:0.1s;">
+        <div class="skill-bars">
+          <div class="skill-bar-item">
+            <div class="skill-bar-head">
+              <span class="skill-name">Azure Databricks &amp; Spark</span>
+              <span class="skill-pct">95%</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" data-w="95"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-head">
+              <span class="skill-name">Python &amp; PySpark</span>
+              <span class="skill-pct">92%</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" data-w="92"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-head">
+              <span class="skill-name">Delta Lake &amp; Data Lakehouse</span>
+              <span class="skill-pct">93%</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" data-w="93"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-head">
+              <span class="skill-name">Azure Data Factory</span>
+              <span class="skill-pct">90%</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" data-w="90"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-head">
+              <span class="skill-name">SQL &amp; Data Modeling</span>
+              <span class="skill-pct">90%</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" data-w="90"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-head">
+              <span class="skill-name">Snowflake &amp; Snowpark</span>
+              <span class="skill-pct">78%</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" data-w="78"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-head">
+              <span class="skill-name">FHIR R5 Healthcare Pipelines</span>
+              <span class="skill-pct">88%</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" data-w="88"></div></div>
+          </div>
         </div>
       </div>
 
-      <div class="skill-card">
-        <div class="skill-card-title"><span class="dot"></span>Languages</div>
-        <div class="skill-tags">
-          <span class="skill-tag">Python</span>
-          <span class="skill-tag">SQL</span>
-          <span class="skill-tag">PL/SQL</span>
-          <span class="skill-tag">Shell Scripting</span>
-          <span class="skill-tag">Java</span>
+      <div class="reveal skill-tags-section" style="transition-delay:0.2s;">
+
+        <div class="skill-group">
+          <div class="skill-group-title">Big Data &amp; Cloud</div>
+          <div class="tag-wrap">
+            <span class="stag">Azure Databricks</span>
+            <span class="stag">PySpark</span>
+            <span class="stag">Spark SQL</span>
+            <span class="stag">Delta Lake</span>
+            <span class="stag">ADLS Gen2</span>
+            <span class="stag">Auto Loader</span>
+            <span class="stag">Photon Engine</span>
+            <span class="stag">Azure</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-group-title">ETL &amp; Integration</div>
+          <div class="tag-wrap">
+            <span class="stag">Azure Data Factory</span>
+            <span class="stag">Talend</span>
+            <span class="stag">Informatica Cloud</span>
+            <span class="stag">Snowpark</span>
+            <span class="stag">REST APIs</span>
+            <span class="stag">CI/CD</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-group-title">Data Modeling &amp; Governance</div>
+          <div class="tag-wrap">
+            <span class="stag">Medallion Architecture</span>
+            <span class="stag">Kimball Dimensional</span>
+            <span class="stag">SCD Type 1/2/Hybrid</span>
+            <span class="stag">OMOP CDM</span>
+            <span class="stag">FHIR R5</span>
+            <span class="stag">Unity Catalog</span>
+            <span class="stag">Data Lineage</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-group-title">Databases &amp; Warehouses</div>
+          <div class="tag-wrap">
+            <span class="stag">SQL Server</span>
+            <span class="stag">Snowflake</span>
+            <span class="stag">PostgreSQL</span>
+            <span class="stag">Oracle</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-group-title">Monitoring &amp; DevOps</div>
+          <div class="tag-wrap">
+            <span class="stag">Power BI</span>
+            <span class="stag">Grafana</span>
+            <span class="stag">Azure DevOps</span>
+            <span class="stag">GitHub</span>
+            <span class="stag">Jenkins</span>
+            <span class="stag">Azure Key Vault</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROJECTS ══════════════════════════════════════ -->
+<section id="projects">
+  <div class="container">
+    <div class="sec-label reveal">Portfolio</div>
+    <h2 class="sec-title reveal">Featured Projects</h2>
+    <p class="sec-sub reveal">Real-world data engineering projects — from healthcare pipelines to GenAI applications.</p>
+
+    <div class="projects-grid">
+
+      <!-- Featured: GenAI Text-to-SQL -->
+      <div class="project-card featured reveal">
+        <div>
+          <div class="project-header">
+            <div class="project-icon">🤖</div>
+            <div class="project-links">
+              <a class="project-link-btn" href="https://github.com/am15398" target="_blank">↗ GitHub</a>
+            </div>
+          </div>
+          <div class="project-name">GenAI Text-to-SQL Healthcare Assistant</div>
+          <div class="project-metric">⚡ Real-time SQL generation from natural language</div>
+          <p class="project-desc">
+            Built a GenAI-powered healthcare analytics application on Databricks Lakehouse. Converts plain English questions to optimized SQL using Groq's Llama-3.1-8B-Instant model. FastAPI backend hosted on GitHub Codespaces connects frontend to Databricks for live query execution and result streaming. Enables non-technical healthcare stakeholders to query clinical datasets instantly.
+          </p>
+          <div class="project-stack">
+            <span class="ptag">Databricks Lakehouse</span>
+            <span class="ptag">FastAPI</span>
+            <span class="ptag">Groq Llama-3.1</span>
+            <span class="ptag">Python</span>
+            <span class="ptag">GitHub Codespaces</span>
+            <span class="ptag">GenAI</span>
+          </div>
         </div>
       </div>
 
-      <div class="skill-card">
-        <div class="skill-card-title"><span class="dot"></span>Data Modeling</div>
-        <div class="skill-tags">
-          <span class="skill-tag">Medallion Architecture</span>
-          <span class="skill-tag">Kimball Dimensional</span>
-          <span class="skill-tag">SCD Type 1/2/Hybrid</span>
-          <span class="skill-tag">OMOP CDM</span>
-          <span class="skill-tag">FHIR R5</span>
-          <span class="skill-tag">Unity Catalog</span>
+      <!-- FHIR Pipeline -->
+      <div class="project-card reveal" style="transition-delay:0.1s;">
+        <div class="project-header">
+          <div class="project-icon">🏥</div>
+        </div>
+        <div class="project-name">Healthcare FHIR R5 Data Pipeline</div>
+        <div class="project-metric">⚡ 14.5 hrs → 2.5 hrs · 80% faster</div>
+        <p class="project-desc">
+          Large-scale FHIR-compliant interoperability pipeline using Databricks and DbIgnite. Generates millions of JSON FHIR resources for Lab, Micro, Vitals, and Procedures. Advanced Spark tuning — AQE, broadcast joins, caching — achieved 80% processing improvement at same 4-DBU cost.
+        </p>
+        <div class="project-stack">
+          <span class="ptag">PySpark</span>
+          <span class="ptag">FHIR R5</span>
+          <span class="ptag">DbIgnite</span>
+          <span class="ptag">Delta Lake</span>
+          <span class="ptag">Unity Catalog</span>
         </div>
       </div>
 
-      <div class="skill-card">
-        <div class="skill-card-title"><span class="dot"></span>Databases &amp; Warehouses</div>
-        <div class="skill-tags">
-          <span class="skill-tag">SQL Server</span>
-          <span class="skill-tag">PostgreSQL</span>
-          <span class="skill-tag">Snowflake</span>
-          <span class="skill-tag">Oracle</span>
+      <!-- Databricks to Snowflake -->
+      <div class="project-card reveal" style="transition-delay:0.15s;">
+        <div class="project-header">
+          <div class="project-icon">🔄</div>
+        </div>
+        <div class="project-name">Databricks → Snowflake Migration Framework</div>
+        <div class="project-metric">✅ Full logic parity across environments</div>
+        <p class="project-desc">
+          POC framework for migrating PySpark pipelines to Snowflake using Snowpark. Ensures logic parity and performance benchmarking across both platforms. Includes automated DDL migration via Databricks REST API with dry-run mode and audit logging.
+        </p>
+        <div class="project-stack">
+          <span class="ptag">Snowflake</span>
+          <span class="ptag">Snowpark</span>
+          <span class="ptag">PySpark</span>
+          <span class="ptag">Databricks REST API</span>
+          <span class="ptag">Python</span>
         </div>
       </div>
 
-      <div class="skill-card">
-        <div class="skill-card-title"><span class="dot"></span>DevOps &amp; Monitoring</div>
-        <div class="skill-tags">
-          <span class="skill-tag">Azure DevOps</span>
-          <span class="skill-tag">GitHub</span>
-          <span class="skill-tag">Jenkins</span>
-          <span class="skill-tag">Power BI</span>
-          <span class="skill-tag">Grafana</span>
-          <span class="skill-tag">Azure Key Vault</span>
+      <!-- Metadata Ingestion -->
+      <div class="project-card reveal" style="transition-delay:0.2s;">
+        <div class="project-header">
+          <div class="project-icon">🏗️</div>
+        </div>
+        <div class="project-name">Metadata-Driven ADF Ingestion Framework</div>
+        <div class="project-metric">⚡ 40% onboarding effort reduction</div>
+        <p class="project-desc">
+          Configurable ADF ingestion framework supporting SQL Server, REST APIs, MS Dynamics 365, and local file shares. Ingests CSV, Parquet, and JSON. Generic Databricks notebooks for reject handling, archival, and audit logging with full data lineage.
+        </p>
+        <div class="project-stack">
+          <span class="ptag">Azure Data Factory</span>
+          <span class="ptag">Databricks</span>
+          <span class="ptag">ADLS Gen2</span>
+          <span class="ptag">Delta Lake</span>
+          <span class="ptag">Python</span>
         </div>
       </div>
 
     </div>
-  </section>
+  </div>
+</section>
 
-  <div class="divider"></div>
+<div class="divider"></div>
 
-  <!-- ── EXPERIENCE ── -->
-  <section id="experience">
-    <div class="section-label">career</div>
-    <h2 class="section-title">Where I've <em>Made Impact</em></h2>
+<!-- ══ EXPERIENCE ══════════════════════════════════════ -->
+<section id="experience">
+  <div class="container">
+    <div class="sec-label reveal">Career</div>
+    <h2 class="sec-title reveal">Work Experience</h2>
+    <p class="sec-sub reveal">7 years building data platforms across healthcare, advisory, and enterprise tech.</p>
 
     <div class="timeline">
 
-      <div class="timeline-item">
-        <div class="exp-header">
-          <div class="exp-company">Tredence Inc.</div>
-          <span class="exp-badge">Current</span>
+      <div class="tl-item">
+        <div class="tl-dot current"></div>
+        <div class="tl-card">
+          <div class="tl-head">
+            <div class="tl-company">Tredence Inc.</div>
+            <span class="tl-badge">Current</span>
+          </div>
+          <div class="tl-role">Senior Data Engineer / Associate Manager</div>
+          <div class="tl-period">April 2024 — Present · Delhi NCR, India</div>
+          <ul class="tl-bullets">
+            <li>Led team designing Azure Databricks platforms using ADF, ADLS Gen2, Delta Lake, Auto Loader, and Medallion (Bronze–Silver–Gold) architecture.</li>
+            <li>Built metadata-driven ADF ingestion framework supporting SQL Server, REST APIs, and MS Dynamics 365 — <span class="hl">reduced manual onboarding by 40%.</span></li>
+            <li>Reduced FHIR JSON generation from 14.5 hours to 2.5 hours — <span class="hl">~80% improvement</span> at same 4-DBU cluster cost.</li>
+            <li>Developed dynamic SCD Type 1, 2, and Fact processing notebooks, <span class="hl">reducing manual effort by 50%.</span></li>
+            <li>Optimised Spark workloads using AQE, broadcast joins, Liquid Clustering, Photon engine, ZORDER, and file compaction.</li>
+            <li>Drove POC migrating Databricks PySpark pipelines to Snowflake using Snowpark, ensuring logic parity.</li>
+            <li>Ensured governance and compliance via Databricks Unity Catalog, audit logging, and Azure Key Vault.</li>
+          </ul>
         </div>
-        <div class="exp-role">Senior Data Engineer / Associate Manager</div>
-        <div class="exp-period">April 2024 — Present · Delhi NCR</div>
-        <ul class="exp-bullets">
-          <li>Led team designing Azure Databricks platforms using ADF, ADLS Gen2, Delta Lake, and Medallion (Bronze–Silver–Gold) architecture.</li>
-          <li>Built metadata-driven ADF ingestion framework supporting SQL Server, REST APIs, MS Dynamics 365 — <span class="highlight">reduced onboarding effort by 40%</span>.</li>
-          <li>Reduced FHIR JSON generation time from 14.5 hrs to 2.5 hrs — <span class="highlight">~80% improvement</span> maintaining same 4-DBU cluster cost.</li>
-          <li>Developed dynamic SCD Type 1, 2, and Fact processing notebooks, <span class="highlight">reducing manual effort by 50%</span>.</li>
-          <li>Implemented Liquid Clustering, AQE, broadcast joins, ZORDER, and Photon engine for large-scale Spark optimization.</li>
-          <li>Drove Databricks-to-Snowflake POC migration using Snowpark, ensuring logic parity and performance.</li>
-          <li>Ensured governance and regulatory compliance using Databricks Unity Catalog with access control and audit logging.</li>
-        </ul>
       </div>
 
-      <div class="timeline-item">
-        <div class="exp-header">
-          <div class="exp-company">Ria Advisory</div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <div class="tl-head">
+            <div class="tl-company">Ria Advisory</div>
+          </div>
+          <div class="tl-role">Data Engineer</div>
+          <div class="tl-period">May 2022 — March 2024 · Delhi NCR, India</div>
+          <ul class="tl-bullets">
+            <li>Designed and executed ETL pipelines using Azure Data Factory, Databricks, and Talend for BI initiatives.</li>
+            <li>Migrated On-Prem SQL Server databases to ADLS Gen2 via Self-Hosted Integration Runtime.</li>
+            <li>Built parameterised ADF pipelines with dynamic datasets and linked services for flexible multi-source ingestion.</li>
+            <li><span class="hl">Optimised PL/SQL queries reducing execution time from 3 hours to 195 seconds.</span></li>
+            <li>Developed Fact and Dimension ETL pipelines implementing SCD Type 1, 2, and 3 strategies.</li>
+            <li>Converted PL/SQL migration logic to PostgreSQL including DDL, DML, functions, and views.</li>
+          </ul>
         </div>
-        <div class="exp-role">Data Engineer</div>
-        <div class="exp-period">May 2022 — March 2024 · Delhi NCR</div>
-        <ul class="exp-bullets">
-          <li>Designed and executed ETL pipelines using Azure Data Factory, Databricks, and Talend.</li>
-          <li>Migrated On-Prem SQL Server databases to ADLS Gen2 via Self-Hosted Integration Runtime.</li>
-          <li>Built parameterized ADF pipelines with dynamic datasets and linked services for flexible ingestion.</li>
-          <li>Developed Fact and Dimension ETL pipelines implementing SCD Type 1, 2, and 3 strategies.</li>
-          <li><span class="highlight">Optimized PL/SQL queries reducing execution from 3 hours to 195 seconds.</span></li>
-          <li>Converted PL/SQL migration logic to PostgreSQL including DDL, DML, functions, and views.</li>
-        </ul>
       </div>
 
-      <div class="timeline-item">
-        <div class="exp-header">
-          <div class="exp-company">Optum Global Solutions</div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <div class="tl-head">
+            <div class="tl-company">Optum Global Solutions</div>
+          </div>
+          <div class="tl-role">Data Engineer</div>
+          <div class="tl-period">August 2019 — May 2022 · Delhi NCR, India</div>
+          <ul class="tl-bullets">
+            <li>Developed and maintained end-to-end ETL pipelines aligned with business requirements following Agile practices.</li>
+            <li>Designed error-handling and restart frameworks, reducing job failures and operational downtime.</li>
+            <li>Played multiple SDLC roles — Developer, System Analyst, and QE — across project lifecycle.</li>
+            <li>Designed Grafana dashboards providing business and operational monitoring insights.</li>
+            <li>Mentored offshore teams and served as single point of contact for ETL deployment and maintenance.</li>
+          </ul>
         </div>
-        <div class="exp-role">Data Engineer</div>
-        <div class="exp-period">August 2019 — May 2022 · Delhi NCR</div>
-        <ul class="exp-bullets">
-          <li>Developed end-to-end ETL pipelines aligned with business requirements and Agile practices.</li>
-          <li>Designed error-handling and restart frameworks, reducing job failures and operational downtime.</li>
-          <li>Played multiple SDLC roles — Developer, System Analyst, and QE.</li>
-          <li>Designed Grafana dashboards for business and operational monitoring insights.</li>
-          <li>Mentored offshore teams and served as single point of contact for ETL deployment.</li>
-        </ul>
       </div>
 
     </div>
-  </section>
+  </div>
+</section>
 
-  <div class="divider"></div>
+<!-- ══ CERTIFICATIONS ══════════════════════════════════════ -->
+<section id="certifications">
+  <div class="container">
+    <div class="sec-label reveal">Credentials</div>
+    <h2 class="sec-title reveal">Certifications</h2>
+    <p class="sec-sub reveal">Validated expertise across Databricks and Microsoft Azure ecosystems.</p>
 
-  <!-- ── CERTIFICATIONS ── -->
-  <section id="certifications">
-    <div class="section-label">credentials</div>
-    <h2 class="section-title">Certified <em>Expertise</em></h2>
     <div class="certs-grid">
-
-      <div class="cert-card">
-        <div class="cert-icon">⚡</div>
+      <div class="cert-card reveal">
+        <div class="cert-icon-wrap">⚡</div>
         <div>
           <div class="cert-name">Databricks Certified Data Engineer Professional</div>
           <div class="cert-issuer">Databricks</div>
         </div>
       </div>
-
-      <div class="cert-card">
-        <div class="cert-icon">🔷</div>
+      <div class="cert-card reveal" style="transition-delay:0.1s;">
+        <div class="cert-icon-wrap">🔷</div>
         <div>
           <div class="cert-name">Databricks Certified Data Engineer Associate</div>
           <div class="cert-issuer">Databricks</div>
         </div>
       </div>
-
-      <div class="cert-card">
-        <div class="cert-icon">🏅</div>
+      <div class="cert-card reveal" style="transition-delay:0.2s;">
+        <div class="cert-icon-wrap">🏅</div>
         <div>
           <div class="cert-name">Microsoft Certified: Fabric Data Engineer Associate</div>
-          <div class="cert-issuer">Microsoft — DP-700</div>
+          <div class="cert-issuer">Microsoft · DP-700</div>
         </div>
       </div>
-
-      <div class="cert-card">
-        <div class="cert-icon">🔄</div>
+      <div class="cert-card reveal" style="transition-delay:0.3s;">
+        <div class="cert-icon-wrap">🔄</div>
         <div>
-          <div class="cert-name">SAFe for Teams Course (5.1)</div>
-          <div class="cert-issuer">Scaled Agile</div>
+          <div class="cert-name">SAFe for Teams (5.1)</div>
+          <div class="cert-issuer">Scaled Agile Framework</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ BLOG ══════════════════════════════════════ -->
+<section id="blog">
+  <div class="container">
+    <div class="sec-label reveal">Writing</div>
+    <h2 class="sec-title reveal">Articles &amp; Insights</h2>
+    <p class="sec-sub reveal">Sharing what I learn building production data platforms — technical deep-dives and lessons from the field.</p>
+
+    <div class="blog-grid">
+
+      <div class="blog-card reveal">
+        <span class="blog-tag">Databricks</span>
+        <div class="blog-title">Liquid Clustering vs ZORDER: When to Use What in Delta Lake</div>
+        <p class="blog-excerpt">A practical comparison of Delta Lake's two major data layout strategies, with benchmarks from production healthcare workloads and guidance on choosing the right approach.</p>
+        <div class="blog-footer">
+          <span>Coming Soon</span>
+          <span class="blog-read">Read → </span>
+        </div>
+      </div>
+
+      <div class="blog-card reveal" style="transition-delay:0.1s;">
+        <span class="blog-tag">FHIR</span>
+        <div class="blog-title">Cutting FHIR Pipeline Runtime by 80%: A Spark Tuning Deep Dive</div>
+        <p class="blog-excerpt">How we took a 14.5-hour FHIR JSON generation job down to 2.5 hours using AQE, broadcast joins, caching, and Photon — without increasing cluster spend.</p>
+        <div class="blog-footer">
+          <span>Coming Soon</span>
+          <span class="blog-read">Read → </span>
+        </div>
+      </div>
+
+      <div class="blog-card reveal" style="transition-delay:0.2s;">
+        <span class="blog-tag">Architecture</span>
+        <div class="blog-title">Designing a Metadata-Driven Ingestion Framework with ADF &amp; Databricks</div>
+        <p class="blog-excerpt">Step-by-step walkthrough of building a config-driven, source-agnostic ingestion layer that reduced our client onboarding effort by 40% and improved reusability across projects.</p>
+        <div class="blog-footer">
+          <span>Coming Soon</span>
+          <span class="blog-read">Read → </span>
         </div>
       </div>
 
     </div>
-  </section>
 
-  <div class="divider"></div>
+    <div class="blog-note reveal">
+      ✍️ Articles coming soon on <a href="https://linkedin.com/in/ayush-maurya4" target="_blank">LinkedIn</a> and Medium. Follow along for technical deep-dives on Databricks, FHIR, and data platform architecture.
+    </div>
+  </div>
+</section>
 
-  <!-- ── PROJECTS ── -->
-  <section id="projects">
-    <div class="section-label">personal projects</div>
-    <h2 class="section-title">What I've <em>Built</em></h2>
+<!-- ══ CONTACT ══════════════════════════════════════ -->
+<section id="contact">
+  <div class="container">
+    <div class="sec-label reveal">Reach Out</div>
+    <h2 class="sec-title reveal">Let's Connect</h2>
 
-    <div class="project-card">
-      <div>
-        <div class="project-name">GenAI Text-to-SQL Healthcare Assistant</div>
-        <p class="project-desc">
-          Built a GenAI-powered application enabling natural-language queries over healthcare data using
-          Databricks Lakehouse as the data backend. The system converts plain English questions into optimized
-          SQL queries via Groq's Llama-3.1-8B-Instant model. Developed a FastAPI backend hosted on GitHub
-          Codespaces connecting the frontend with Databricks for real-time query execution and result streaming.
-        </p>
-        <div class="project-stack">
-          <span class="stack-tag">Databricks Lakehouse</span>
-          <span class="stack-tag">FastAPI</span>
-          <span class="stack-tag">Groq Llama-3.1</span>
-          <span class="stack-tag">Python</span>
-          <span class="stack-tag">GitHub Codespaces</span>
-          <span class="stack-tag">GenAI</span>
+    <div class="contact-wrapper">
+      <div class="reveal">
+        <p>Open to <strong>Senior Data Engineer</strong> and <strong>Lead Data Engineer</strong> roles — Pan India remote, Delhi NCR, Bengaluru, Hyderabad, Mumbai, and US/UK remote positions.</p>
+
+        <div class="contact-links">
+          <a class="contact-link" href="mailto:ayushmaurya15398@gmail.com">
+            <div class="cl-icon">📧</div>
+            <div>
+              <div class="cl-label">Email</div>
+              <div class="cl-value">ayushmaurya15398@gmail.com</div>
+            </div>
+          </a>
+          <a class="contact-link" href="tel:+917011856441">
+            <div class="cl-icon">📱</div>
+            <div>
+              <div class="cl-label">Phone</div>
+              <div class="cl-value">+91 70118 56441</div>
+            </div>
+          </a>
+          <a class="contact-link" href="https://linkedin.com/in/ayush-maurya4" target="_blank">
+            <div class="cl-icon">🔗</div>
+            <div>
+              <div class="cl-label">LinkedIn</div>
+              <div class="cl-value">linkedin.com/in/ayush-maurya4</div>
+            </div>
+          </a>
+          <a class="contact-link" href="https://github.com/am15398" target="_blank">
+            <div class="cl-icon">⚡</div>
+            <div>
+              <div class="cl-label">GitHub</div>
+              <div class="cl-value">github.com/am15398</div>
+            </div>
+          </a>
         </div>
       </div>
-      <div>
-        <a class="project-link" href="https://github.com/am15398" target="_blank">
-          ↗ View on GitHub
-        </a>
+
+      <div class="contact-form reveal" style="transition-delay:0.15s;">
+        <h3>Send a Message</h3>
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" placeholder="Jane Smith" />
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="jane@company.com" />
+        </div>
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" placeholder="Data Engineer Role — Lead" />
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea rows="4" placeholder="Hi Ayush, I came across your profile..."></textarea>
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="handleContact()">
+          Send Message
+        </button>
+        <p class="form-note">This will open your email client · Or reach me directly above</p>
       </div>
     </div>
+  </div>
+</section>
 
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- ── CONTACT ── -->
-  <section id="contact">
-    <div class="section-label">reach out</div>
-    <h2 class="section-title">Let's <em>Connect</em></h2>
-    <p style="color:var(--text-dim);font-size:14px;max-width:480px;margin:0 auto;">
-      Open to Senior Data Engineer and Lead roles — Pan India remote, Delhi NCR, Bengaluru, Hyderabad, Mumbai, and US/UK remote.
-    </p>
-    <div class="contact-grid">
-      <a class="contact-card" href="mailto:ayushmaurya15398@gmail.com">
-        <span class="contact-icon">📧</span>
-        ayushmaurya15398@gmail.com
-      </a>
-      <a class="contact-card" href="tel:+917011856441">
-        <span class="contact-icon">📱</span>
-        +91 70118 56441
-      </a>
-      <a class="contact-card" href="https://linkedin.com/in/ayush-maurya4" target="_blank">
-        <span class="contact-icon">🔗</span>
-        linkedin.com/in/ayush-maurya4
-      </a>
-      <a class="contact-card" href="https://github.com/am15398" target="_blank">
-        <span class="contact-icon">⚡</span>
-        github.com/am15398
-      </a>
-    </div>
-  </section>
-
-</main>
-
+<!-- ══ FOOTER ══════════════════════════════════════ -->
 <footer>
-  Built with precision by <span>Ayush Maurya</span> · Senior Data Engineer · Delhi NCR, India
+  <div class="footer-inner">
+    <div class="footer-copy">
+      Built by <span>Ayush Maurya</span> · Senior Data Engineer · Delhi NCR, India
+    </div>
+    <div class="footer-links">
+      <a href="#hero">Top</a>
+      <a href="https://github.com/am15398" target="_blank">GitHub</a>
+      <a href="https://linkedin.com/in/ayush-maurya4" target="_blank">LinkedIn</a>
+      <a href="mailto:ayushmaurya15398@gmail.com">Email</a>
+    </div>
+  </div>
 </footer>
 
-<script>
-  // Intersection observer for timeline items
-  const items = document.querySelectorAll('.timeline-item');
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 120);
-      }
-    });
-  }, { threshold: 0.15 });
-  items.forEach(el => io.observe(el));
+<!-- Back to top -->
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-  // Smooth active nav highlighting
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a');
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 100) current = s.id;
-    });
-    navLinks.forEach(a => {
-      a.style.color = a.getAttribute('href') === '#' + current
-        ? 'var(--cyan)' : '';
-    });
+<!-- ══════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════ -->
+<script>
+/* ── Theme toggle ── */
+const root = document.documentElement;
+const themeBtn = document.getElementById('themeToggle');
+let dark = true;
+
+themeBtn.addEventListener('click', () => {
+  dark = !dark;
+  root.setAttribute('data-theme', dark ? 'dark' : 'light');
+  themeBtn.textContent = dark ? '🌙' : '☀️';
+});
+
+/* ── Mobile menu ── */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+function closeMobile() { mobileMenu.classList.remove('open'); }
+
+/* ── Intersection Observer — reveal + timeline ── */
+const revealEls = document.querySelectorAll('.reveal, .tl-item');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      io.unobserve(e.target);
+    }
   });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+revealEls.forEach(el => io.observe(el));
+
+/* ── Skill bar animation ── */
+const barIO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.w + '%';
+      });
+      barIO.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.skill-bars').forEach(el => barIO.observe(el));
+
+/* ── Back to top ── */
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => {
+  backTop.classList.toggle('show', window.scrollY > 400);
+});
+
+/* ── Nav active highlight ── */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 80) cur = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#' + cur ? 'var(--text)' : '';
+    a.style.background = a.getAttribute('href') === '#' + cur ? 'var(--bg4)' : '';
+  });
+}, { passive: true });
+
+/* ── Contact form ── */
+function handleContact() {
+  const name    = document.querySelectorAll('.form-group input')[0].value;
+  const email   = document.querySelectorAll('.form-group input')[1].value;
+  const subject = document.querySelectorAll('.form-group input')[2].value;
+  const body    = document.querySelector('textarea').value;
+  const mailto  = `mailto:ayushmaurya15398@gmail.com?subject=${encodeURIComponent(subject || 'Portfolio Inquiry')}&body=${encodeURIComponent(`From: ${name} (${email})\n\n${body}`)}`;
+  window.location.href = mailto;
+}
+
+/* ── Stagger reveal delays ── */
+document.querySelectorAll('.projects-grid .project-card').forEach((el, i) => {
+  el.style.transitionDelay = (i * 0.08) + 's';
+});
+
+document.querySelectorAll('.tl-item').forEach((el, i) => {
+  el.style.transitionDelay = (i * 0.12) + 's';
+});
 </script>
 </body>
 </html>
+
