@@ -186,6 +186,28 @@ nav {
   gap: 10px;
 }
 
+/* Resume nav button */
+.nav-resume {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'DM Mono', monospace;
+  color: var(--accent-g2);
+  background: rgba(63,185,80,0.08);
+  border: 1px solid rgba(63,185,80,0.25);
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  letter-spacing: 0.04em;
+}
+.nav-resume:hover {
+  background: rgba(63,185,80,0.16);
+  border-color: var(--accent-g2);
+  transform: translateY(-1px);
+}
+
 /* Theme toggle */
 .theme-toggle {
   display: flex;
@@ -420,6 +442,19 @@ h1.hero-name .gradient-text {
   border-color: var(--border);
 }
 .btn-ghost:hover { background: var(--bg2); color: var(--text); }
+
+/* Resume CTA button special style */
+.btn-resume {
+  background: rgba(63,185,80,0.1);
+  color: var(--accent-g2);
+  border-color: rgba(63,185,80,0.3);
+}
+.btn-resume:hover {
+  background: rgba(63,185,80,0.18);
+  border-color: var(--accent-g2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(63,185,80,0.2);
+}
 
 /* Hero stats */
 .hero-stats {
@@ -1096,6 +1131,17 @@ h2.sec-title {
   transform: translateX(4px);
 }
 
+/* Resume contact link special highlight */
+.contact-link.resume-link {
+  border-color: rgba(63,185,80,0.25);
+  background: rgba(63,185,80,0.04);
+}
+.contact-link.resume-link:hover {
+  border-color: var(--accent-g2);
+  background: rgba(63,185,80,0.1);
+  transform: translateX(4px);
+}
+
 .cl-icon {
   width: 38px; height: 38px;
   border-radius: 8px;
@@ -1278,6 +1324,7 @@ footer {
 ══════════════════════════════════════════════ */
 @media (max-width: 900px) {
   .nav-links { display: none; }
+  .nav-resume { display: none; }
   .hamburger { display: flex; }
 
   .about-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -1319,6 +1366,8 @@ footer {
     </ul>
 
     <div class="nav-right">
+      <!-- ✅ RESUME BUTTON IN NAV -->
+      <a class="nav-resume" href="Ayush_Maurya_Data_Engineer_7years.pdf" download="Ayush_Maurya_Resume.pdf">📄 Resume</a>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">🌙</button>
       <button class="hamburger" id="hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
@@ -1336,6 +1385,8 @@ footer {
   <a href="#certifications" onclick="closeMobile()">Certifications</a>
   <a href="#blog" onclick="closeMobile()">Articles</a>
   <a href="#contact" onclick="closeMobile()">Contact</a>
+  <!-- ✅ RESUME IN MOBILE MENU -->
+  <a href="Ayush_Maurya_Data_Engineer_7years.pdf" download="Ayush_Maurya_Resume.pdf" onclick="closeMobile()">📄 Download Resume</a>
 </div>
 
 <!-- ══ HERO ══════════════════════════════════════ -->
@@ -1361,12 +1412,13 @@ footer {
         Triple certified: Databricks Associate, Professional, and Microsoft Fabric.
       </p>
 
-      <div class="hero-cta">
-        <a class="btn btn-primary" href="#contact">Get in Touch</a>
-        <a class="btn btn-secondary" href="#projects">View Projects</a>
-        <a class="btn btn-ghost" href="https://github.com/am15398" target="_blank">⚡ GitHub</a>
-        <a class="btn btn-ghost" href="https://linkedin.com/in/ayush-maurya4" target="_blank">🔗 LinkedIn</a>
-      </div>
+	  <div class="hero-cta">
+	    <a class="btn btn-primary" href="#contact">Get in Touch</a>
+	    <a class="btn btn-resume" href="Ayush_Maurya_Data_Engineer_7years.pdf" download="Ayush_Maurya_Resume.pdf">📄 Download Resume</a>
+	    <a class="btn btn-ghost" href="https://linkedin.com/in/ayush-maurya4" target="_blank">🔗 LinkedIn</a>
+	    <a class="btn btn-ghost" href="https://github.com/am15398" target="_blank">⚡ GitHub</a>
+	    <a class="btn btn-secondary" href="#projects">View Projects</a>
+	  </div>
 
       <div class="hero-stats">
         <div class="hero-stat">
@@ -1400,8 +1452,9 @@ footer {
         <p>I'm a <strong>Senior Data Engineer and Associate Manager</strong> with 7 years of experience designing and optimising enterprise-scale data platforms on <strong>Azure &amp; Databricks</strong> within the US Healthcare domain.</p>
         <p>My core expertise lies in building <strong>Medallion Lakehouse architectures</strong>, engineering FHIR-compliant healthcare pipelines, and delivering GenAI-powered analytics solutions. I lead teams end-to-end — from translating business requirements into scalable ingestion frameworks to driving data governance with Unity Catalog.</p>
         <p>Beyond the technical stack, I believe in <strong>clean data contracts, observable pipelines, and platforms that teams actually want to use</strong>. I've reduced pipeline run times by 80%, cut manual onboarding effort by 40%, and automated SCD workflows that previously required constant maintenance.</p>
-        <div style="margin-top:28px;">
+        <div style="margin-top:28px; display:flex; gap:12px; flex-wrap:wrap;">
           <a class="btn btn-secondary" href="mailto:ayushmaurya15398@gmail.com">📧 ayushmaurya15398@gmail.com</a>
+          <a class="btn btn-resume" href="Ayush_Maurya_Data_Engineer_7years.pdf" download="Ayush_Maurya_Resume.pdf">📄 Download Resume</a>
         </div>
       </div>
 
@@ -1877,6 +1930,14 @@ footer {
               <div class="cl-value">github.com/am15398</div>
             </div>
           </a>
+          <!-- ✅ RESUME IN CONTACT SECTION -->
+          <a class="contact-link resume-link" href="Ayush_Maurya_Data_Engineer_7years.pdf" download="Ayush_Maurya_Resume.pdf">
+            <div class="cl-icon">📄</div>
+            <div>
+              <div class="cl-label">Resume</div>
+              <div class="cl-value">Download PDF · 7 Years Experience</div>
+            </div>
+          </a>
         </div>
       </div>
 
@@ -1918,6 +1979,8 @@ footer {
       <a href="https://github.com/am15398" target="_blank">GitHub</a>
       <a href="https://linkedin.com/in/ayush-maurya4" target="_blank">LinkedIn</a>
       <a href="mailto:ayushmaurya15398@gmail.com">Email</a>
+      <!-- ✅ RESUME IN FOOTER -->
+      <a href="Ayush_Maurya_Data_Engineer_7years.pdf" download="Ayush_Maurya_Resume.pdf">Resume</a>
     </div>
   </div>
 </footer>
@@ -2012,4 +2075,3 @@ document.querySelectorAll('.tl-item').forEach((el, i) => {
 </script>
 </body>
 </html>
-
